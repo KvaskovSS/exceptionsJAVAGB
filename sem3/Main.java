@@ -5,12 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-class InvalidDataFormatException extends Exception {
-    public InvalidDataFormatException(String message) {
-        super(message);
-    }
-}
-
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -19,7 +13,7 @@ public class Main {
 
         String[] data = input.split(" ");
         if (data.length != 4) {
-            System.out.println("Ошибка: неверное количество данных.");
+            System.out.println("Ошибка: неверное количество данных");
             return;
         }
 
@@ -28,33 +22,28 @@ public class Main {
         String patronymic = data[2];
         String phoneNumber = data[3];
 
-        if (!isString(surname) || !isString(name) || !isString(patronymic)) {
-            System.out.println("Ошибка: Фамилия, Имя и Отчество должны быть строками.");
+        if (!surname.matches("[а-яА-Яa-zA-Z]+")) {
+            System.out.println("Ошибка: фамилия должна содержать только буквы");
+            return;
+        }
+        if (!name.matches("[а-яА-Яa-zA-Z]+")) {
+            System.out.println("Ошибка: имя должна содержать только буквы");
+            return;
+        }
+        if (!patronymic.matches("[а-яА-Яa-zA-Z]+")) {
+            System.out.println("Ошибка: отчество должна содержать только буквы");
             return;
         }
 
-        if (!isNumeric(phoneNumber)) {
-            System.out.println("Ошибка: Номер телефона должен быть числом.");
-            return;
-        }
-
-        String fileName = surname + ".txt";
-        String fileContent = surname + name + patronymic + phoneNumber;
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            writer.write(fileContent);
-            System.out.println("Данные успешно записаны в файл " + fileName);
+        try {
+            String filename = surname + ".txt";
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true));
+            writer.write("<" + surname + "><" + name + "><" + patronymic + "><" + phoneNumber + ">\n");
+            writer.close();
+            System.out.println("Данные успешно записаны в файл " + filename);
         } catch (IOException e) {
             System.out.println("Ошибка при записи в файл:");
             e.printStackTrace();
         }
-    }
-
-    private static boolean isString(String str) {
-        return str.matches("[a-zA-Zа-яА-Я]+");
-    }
-
-    private static boolean isNumeric(String str) {
-        return str.matches("\\d+");
     }
 }
